@@ -3,7 +3,10 @@
     "allow": [
       "Bash(claude *)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(python -c \"from database.db import get_db, init_db, seed_db; print\\('Import OK'\\)\")",
+      "Bash(python *)",
+      "Bash(sqlite3 *)"
     ]
   }
 }
