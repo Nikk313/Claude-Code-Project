@@ -1,5 +1,6 @@
 import sqlite3
 from pathlib import Path
+from werkzeug.security import generate_password_hash
 
 DATABASE_PATH = Path(__file__).parent / "spendly.db"
 
@@ -12,6 +13,18 @@ def get_db():
     return conn
 
 
+def create_user(name: str, email: str, password: str) -> int:
+    """Create a new user. Returns user id. Raises IntegrityError if email exists."""
+    db = get_db()
+    password_hash = generate_password_hash(password)
+    cursor = db.execute(
+        "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
+        (name, email, password_hash),
+    )
+    db.commit()
+    return cursor.lastrowid
+
+
 def init_db():
     """Create all tables if they don't exist."""
     conn = get_db()
@@ -20,8 +33,9 @@ def init_db():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
@@ -50,15 +64,15 @@ def seed_db():
 
     # Sample users (passwords are plaintext for dev - will hash in Step 3)
     sample_users = [
-        ("demo_user", "demo123"),
-        ("alice", "password123"),
-        ("bob", "bobpass"),
+        ("Demo User", "demo@spendly.com", "demo123"),
+        ("Alice Sharma", "alice.sharma@example.com", "password123"),
+        ("Bob Verma", "bob.verma@example.com", "bobpass"),
     ]
 
-    for username, password in sample_users:
+    for name, email, password in sample_users:
         cursor.execute(
-            "INSERT OR IGNORE INTO users (username, password) VALUES (?, ?)",
-            (username, password),
+            "INSERT OR IGNORE INTO users (name, email, password_hash) VALUES (?, ?, ?)",
+            (name, email, password),
         )
 
     # Sample expenses
