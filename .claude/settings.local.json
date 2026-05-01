@@ -9,7 +9,9 @@
       "Bash(sqlite3 *)",
       "Bash(curl -s http://localhost:5001/register)",
       "Bash(curl -s -X POST http://localhost:5001/register -d \"name=Test User&email=test@example.com&password=password123&confirm_password=password123\" -L)",
-      "Bash(curl *)"
+      "Bash(curl *)",
+      "Bash(curl -s -L -c /tmp/cookies.txt -b /tmp/cookies.txt -X POST -d \"email=demo@spendly.com&password=demo123\" http://localhost:5001/login)",
+      "Read(//tmp/**)"
     ]
   }
 }
