@@ -62,7 +62,7 @@ def seed_db():
     conn = get_db()
     cursor = conn.cursor()
 
-    # Sample users (passwords are plaintext for dev - will hash in Step 3)
+    # Sample users with hashed passwords
     sample_users = [
         ("Demo User", "demo@spendly.com", "demo123"),
         ("Alice Sharma", "alice.sharma@example.com", "password123"),
@@ -70,9 +70,10 @@ def seed_db():
     ]
 
     for name, email, password in sample_users:
+        password_hash = generate_password_hash(password)
         cursor.execute(
             "INSERT OR IGNORE INTO users (name, email, password_hash) VALUES (?, ?, ?)",
-            (name, email, password),
+            (name, email, password_hash),
         )
 
     # Sample expenses
